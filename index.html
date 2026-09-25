@@ -58,17 +58,16 @@
         img { max-width: 100%; }
 
         body {
-            background-color: var(--bg-body);
+            /* Noche botánica + neón suave (mint / cyan / lavanda) */
+            background-color: #0b1c16;
             background-image:
-                /* ambient color washes */
-                radial-gradient(ellipse at 8% 5%, rgba(82,183,136,0.11) 0%, transparent 42%),
-                radial-gradient(ellipse at 92% 95%, rgba(224,122,95,0.07) 0%, transparent 38%),
-                radial-gradient(ellipse at 70% 20%, rgba(45,106,79,0.05) 0%, transparent 35%),
-                /* soft botanical grid (dots) */
-                radial-gradient(circle at 1px 1px, rgba(45,106,79,0.045) 1px, transparent 0);
-            background-size: auto, auto, auto, 28px 28px;
+                radial-gradient(ellipse at 12% 8%, rgba(64, 224, 180, 0.20) 0%, transparent 48%),
+                radial-gradient(ellipse at 88% 85%, rgba(167, 139, 250, 0.12) 0%, transparent 45%),
+                radial-gradient(ellipse at 55% 40%, rgba(45, 106, 79, 0.35) 0%, transparent 50%),
+                radial-gradient(circle at 1px 1px, rgba(100, 255, 210, 0.07) 1px, transparent 0);
+            background-size: auto, auto, auto, 32px 32px;
             background-attachment: fixed;
-            color: var(--texto-principal);
+            color: #e8f5ef;
             line-height: 1.7;
             min-height: 100vh;
             display: flex;
@@ -79,7 +78,7 @@
             position: relative;
         }
 
-        /* Capas de ambiente botánico fijas detrás del contenido */
+        /* Neón suave detrás del contenido */
         .bg-ambient {
             position: fixed;
             inset: 0;
@@ -90,46 +89,72 @@
         .bg-ambient .orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.45;
-            animation: orbDrift 18s ease-in-out infinite alternate;
+            filter: blur(72px);
+            opacity: 0.55;
+            animation: orbDrift 22s ease-in-out infinite alternate, neonPulse 7s ease-in-out infinite;
         }
         .bg-ambient .orb-1 {
-            width: 420px; height: 420px;
-            background: rgba(82, 183, 136, 0.22);
-            top: -80px; left: -100px;
-            animation-duration: 22s;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(64, 224, 180, 0.55) 0%, rgba(64, 224, 180, 0) 70%);
+            top: -140px; left: -140px;
+            animation-duration: 24s, 7s;
         }
         .bg-ambient .orb-2 {
-            width: 360px; height: 360px;
-            background: rgba(224, 122, 95, 0.12);
-            bottom: 10%; right: -80px;
-            animation-duration: 26s;
-            animation-delay: -4s;
+            width: 420px; height: 420px;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.38) 0%, rgba(167, 139, 250, 0) 70%);
+            bottom: 4%; right: -110px;
+            animation-duration: 28s, 9s;
+            animation-delay: -5s, -2s;
         }
         .bg-ambient .orb-3 {
+            width: 360px; height: 360px;
+            background: radial-gradient(circle, rgba(52, 211, 153, 0.42) 0%, rgba(52, 211, 153, 0) 70%);
+            top: 38%; left: 32%;
+            animation-duration: 26s, 8s;
+            animation-delay: -9s, -1s;
+        }
+        .bg-ambient .orb-4 {
             width: 280px; height: 280px;
-            background: rgba(45, 106, 79, 0.14);
-            top: 45%; left: 40%;
-            animation-duration: 20s;
-            animation-delay: -8s;
+            background: radial-gradient(circle, rgba(94, 234, 212, 0.32) 0%, transparent 70%);
+            top: 68%; left: 8%;
+            animation-duration: 30s, 10s;
+            animation-delay: -6s, -3s;
         }
         .bg-ambient .silhouette {
             position: absolute;
             font-size: 8rem;
-            opacity: 0.04;
-            color: var(--verde-primario);
+            opacity: 0.08;
+            color: #5eead4;
+            text-shadow: 0 0 28px rgba(94, 234, 212, 0.55), 0 0 56px rgba(64, 224, 180, 0.3);
             user-select: none;
             line-height: 1;
+            animation: neonSoft 9s ease-in-out infinite;
         }
-        .bg-ambient .sil-1 { top: 12%; right: 4%; transform: rotate(15deg); font-size: 10rem; }
-        .bg-ambient .sil-2 { bottom: 18%; left: 2%; transform: rotate(-20deg); font-size: 7rem; }
-        .bg-ambient .sil-3 { top: 55%; right: 12%; transform: rotate(8deg); font-size: 6rem; opacity: 0.03; }
+        .bg-ambient .sil-1 { top: 10%; right: 3%; transform: rotate(12deg); font-size: 11rem; }
+        .bg-ambient .sil-2 { bottom: 15%; left: 1%; transform: rotate(-18deg); font-size: 8rem; animation-delay: -3s; }
+        .bg-ambient .sil-3 { top: 52%; right: 10%; transform: rotate(6deg); font-size: 6.5rem; opacity: 0.06; animation-delay: -5s; }
 
         @keyframes orbDrift {
             0%   { transform: translate(0, 0) scale(1); }
-            50%  { transform: translate(30px, 20px) scale(1.08); }
-            100% { transform: translate(-20px, 35px) scale(0.95); }
+            50%  { transform: translate(26px, 16px) scale(1.06); }
+            100% { transform: translate(-16px, 28px) scale(0.96); }
+        }
+        @keyframes neonPulse {
+            0%, 100% { opacity: 0.42; filter: blur(72px) brightness(1); }
+            50%      { opacity: 0.62; filter: blur(64px) brightness(1.12); }
+        }
+        @keyframes neonSoft {
+            0%, 100% { opacity: 0.06; text-shadow: 0 0 20px rgba(94,234,212,0.4); }
+            50%      { opacity: 0.12; text-shadow: 0 0 40px rgba(94,234,212,0.75), 0 0 70px rgba(64,224,180,0.35); }
+        }
+
+        /* Títulos sobre el fondo oscuro neón */
+        .section-header h2 {
+            color: #b8f5d8 !important;
+            text-shadow: 0 0 24px rgba(64, 224, 180, 0.25);
+        }
+        .section-header p {
+            color: #9dcbb8 !important;
         }
 
         h1, h2, h3, .serif-font {
@@ -1797,8 +1822,28 @@
                 transition-duration: 0.01ms !important;
             }
             .floating-leaves { display: none; }
-            .bg-ambient .orb { animation: none; opacity: 0.25; }
+            .bg-ambient .orb { animation: none !important; opacity: 0.35; filter: blur(72px); }
+            .bg-ambient .silhouette { animation: none !important; }
             .hero-banner::after { animation: none; }
+        }
+
+
+        /* Tarjetas con borde neón suave sobre fondo oscuro */
+        .card-malestar, .feature-card, .card-beneficio, .card-receta,
+        .teoria-card, .nosotros-block, .game-card, .detail-box,
+        .botica-plus, .arcade-hub {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 0 1px rgba(94, 234, 212, 0.12) !important;
+        }
+        .card-malestar:hover, .feature-card:hover, .card-beneficio:hover, .card-receta:hover {
+            box-shadow: 0 14px 40px rgba(0,0,0,0.3), 0 0 24px rgba(64, 224, 180, 0.22) !important;
+        }
+        .btn-back {
+            background: rgba(94, 234, 212, 0.15) !important;
+            color: #b8f5d8 !important;
+            border: 1px solid rgba(94, 234, 212, 0.3);
+        }
+        .btn-back:hover {
+            background: rgba(94, 234, 212, 0.25) !important;
         }
 
 </style>
@@ -1809,6 +1854,7 @@
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
         <span class="silhouette sil-1">🌿</span>
         <span class="silhouette sil-2">🍃</span>
         <span class="silhouette sil-3">🌱</span>
