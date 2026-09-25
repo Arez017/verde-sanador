@@ -41,12 +41,17 @@
             --sombra: 0 6px 20px rgba(0, 0, 0, 0.05);
             --sombra-hover: 0 12px 30px rgba(45, 106, 79, 0.15);
             --borde-radius: 18px;
+            --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         img { max-width: 100%; }
 
         body {
             background-color: var(--bg-body);
+            background-image:
+                radial-gradient(ellipse at 10% 0%, rgba(82,183,136,0.07) 0%, transparent 45%),
+                radial-gradient(ellipse at 90% 100%, rgba(224,122,95,0.05) 0%, transparent 40%);
+            background-attachment: fixed;
             color: var(--texto-principal);
             line-height: 1.7;
             min-height: 100vh;
@@ -160,24 +165,190 @@
         /* --- CONTENEDOR PRINCIPAL --- */
         main {
             flex: 1;
+            position: relative;
+            z-index: 1;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes floatLeaf {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(4deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(82, 183, 136, 0.35); }
+            50% { box-shadow: 0 0 0 12px rgba(82, 183, 136, 0); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(24px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes leafFall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes softPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        /* Reveal on scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.7s var(--transition-smooth), transform 0.7s var(--transition-smooth);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* Floating decorative leaves */
+        .floating-leaves {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-leaves span {
+            position: absolute;
+            font-size: 1.4rem;
+            opacity: 0.12;
+            animation: leafFall linear infinite;
+            will-change: transform;
+        }
+
+        /* Enhanced page transitions */
         .page-section {
             display: none;
             max-width: 1150px;
             margin: 30px auto;
             padding: 0 20px;
-            animation: fadeIn 0.4s ease-in-out;
         }
-
         .page-section.active {
             display: block;
+            animation: fadeIn 0.55s var(--transition-smooth);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Hero overlay glow */
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(82,183,136,0.25) 0%, transparent 55%),
+                        radial-gradient(ellipse at 80% 70%, rgba(224,122,95,0.12) 0%, transparent 50%);
+            pointer-events: none;
+            animation: softPulse 8s ease-in-out infinite;
+            z-index: 0;
         }
+
+        /* Button micro-interactions */
+        .btn-cta, .btn-cta-sec {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-cta::after, .btn-cta-sec::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+            background-size: 200% 100%;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .btn-cta:hover::after, .btn-cta-sec:hover::after {
+            opacity: 1;
+            animation: shimmer 1.2s ease;
+        }
+        .btn-cta:active, .btn-cta-sec:active {
+            transform: scale(0.97);
+        }
+
+        /* Card polish */
+        .teoria-card, .feature-card, .card-malestar, .card-beneficio, .detail-box {
+            transition: transform 0.35s var(--transition-smooth), box-shadow 0.35s var(--transition-smooth), border-color 0.3s ease;
+        }
+        .feature-card:hover, .card-malestar:hover, .card-beneficio:hover {
+            transform: translateY(-8px) scale(1.015);
+            box-shadow: 0 16px 40px rgba(45, 106, 79, 0.18);
+        }
+        .card-malestar:hover .card-icon {
+            animation: softPulse 0.6s ease;
+        }
+        .teoria-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(45, 106, 79, 0.12);
+        }
+
+        /* Sabiduría del día highlight */
+        #sabiduriaDia {
+            transition: all 0.5s var(--transition-smooth);
+            position: relative;
+        }
+        #sabiduriaDia.updating {
+            opacity: 0.4;
+            transform: scale(0.98);
+        }
+        #sabiduriaDia::before {
+            content: '✨';
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            font-size: 1.3rem;
+            animation: floatLeaf 3s ease-in-out infinite;
+        }
+
+        /* Navbar glass effect on scroll */
+        .navbar.scrolled {
+            background: rgba(15, 46, 32, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Stagger children utility */
+        .stagger-children > * {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.55s var(--transition-smooth) forwards;
+        }
+        .stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+        .stagger-children > *:nth-child(2) { animation-delay: 0.12s; }
+        .stagger-children > *:nth-child(3) { animation-delay: 0.19s; }
+        .stagger-children > *:nth-child(4) { animation-delay: 0.26s; }
+        .stagger-children > *:nth-child(5) { animation-delay: 0.33s; }
+        .stagger-children > *:nth-child(6) { animation-delay: 0.40s; }
+        .stagger-children > *:nth-child(7) { animation-delay: 0.47s; }
+        .stagger-children > *:nth-child(8) { animation-delay: 0.54s; }
+        .stagger-children > *:nth-child(9) { animation-delay: 0.61s; }
+        .stagger-children > *:nth-child(n+10) { animation-delay: 0.68s; }
 
         .section-header {
             margin-bottom: 30px;
@@ -206,6 +377,8 @@
             text-align: center;
             box-shadow: var(--sombra-hover);
             margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
         }
 
         .hero-banner h1 {
@@ -213,6 +386,9 @@
             font-weight: 800;
             margin-bottom: 20px;
             line-height: 1.2;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.1s both;
         }
 
         .hero-banner p {
@@ -220,6 +396,9 @@
             max-width: 850px;
             margin: 0 auto 35px auto;
             color: #e2ece9;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.25s both;
         }
 
         .hero-buttons {
@@ -227,6 +406,9 @@
             gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.4s both;
         }
 
         .btn-cta {
@@ -703,6 +885,11 @@
             padding: 26px;
             box-shadow: var(--sombra);
             border-top: 4px solid var(--verde-primario);
+            transition: transform 0.35s var(--transition-smooth), box-shadow 0.35s var(--transition-smooth);
+        }
+        .card-receta:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 36px rgba(45, 106, 79, 0.16);
         }
 
         .card-receta h3 {
@@ -1346,9 +1533,200 @@
             .arcade-top{flex-direction:column;align-items:flex-start}
         }
 
+        /* ========== 10/10 POLISH ========== */
+        .logo-badge {
+            transition: transform 0.35s var(--transition-smooth), box-shadow 0.35s ease;
+            animation: pulseGlow 3.5s ease-in-out infinite;
+        }
+        .logo-container:hover .logo-badge {
+            transform: rotate(-8deg) scale(1.08);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 4px;
+            width: 0;
+            height: 2px;
+            background: var(--verde-suave);
+            border-radius: 2px;
+            transition: width 0.3s var(--transition-smooth), left 0.3s var(--transition-smooth);
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 60%;
+            left: 20%;
+        }
+        .btn-juegos::after { display: none !important; }
+
+        /* Modal cinematic */
+        .modal-overlay {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: opacity 0.35s ease;
+        }
+        .modal-overlay.active .modal-content {
+            animation: scaleIn 0.4s var(--transition-smooth);
+        }
+        .modal-content {
+            border: 1px solid rgba(82,183,136,0.25);
+            box-shadow: 0 24px 60px rgba(15,46,32,0.25);
+        }
+
+        /* Image zoom on plant cards */
+        .card-beneficio-img {
+            transition: transform 0.55s var(--transition-smooth);
+        }
+        .card-beneficio:hover .card-beneficio-img {
+            transform: scale(1.08);
+        }
+
+        /* Progress bar top */
+        #scrollProgress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--verde-claro), var(--naranja-acento));
+            z-index: 2000;
+            transition: width 0.1s linear;
+            pointer-events: none;
+        }
+
+        /* Toast notifications */
+        #toastContainer {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--verde-oscuro);
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            font-weight: 600;
+            font-size: 0.95rem;
+            animation: slideInRight 0.4s var(--transition-smooth), fadeOutToast 0.4s ease 2.6s forwards;
+            border-left: 4px solid var(--verde-claro);
+            max-width: 320px;
+        }
+        @keyframes fadeOutToast {
+            to { opacity: 0; transform: translateX(30px); }
+        }
+
+        /* Confetti canvas */
+        #confettiCanvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2500;
+        }
+
+        /* Skeleton loading shimmer */
+        .skeleton {
+            background: linear-gradient(90deg, #eef7f2 25%, #d8efe4 50%, #eef7f2 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s ease infinite;
+            border-radius: 10px;
+            min-height: 20px;
+        }
+
+        /* Better focus states for a11y */
+        .btn-cta:focus-visible, .btn-cta-sec:focus-visible, .nav-link:focus-visible,
+        .card-malestar:focus-visible, .card-beneficio:focus-visible {
+            outline: 3px solid var(--verde-claro);
+            outline-offset: 3px;
+        }
+
+        /* Section divider leaf */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 40px 0 30px;
+            color: var(--verde-suave);
+            font-size: 1.2rem;
+        }
+        .section-divider::before, .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--verde-suave), transparent);
+        }
+
+        /* Cursor leaf trail (desktop only) */
+        .leaf-cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            font-size: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            will-change: transform;
+        }
+
+        /* Smooth image fade-in when loaded */
+        .card-beneficio-img, .nosotros-img, .teoria-card img {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .card-beneficio-img.loaded, .nosotros-img.loaded, .teoria-card img.loaded {
+            opacity: 1;
+        }
+
+        /* Highlight quote breathe */
+        .highlight-quote {
+            position: relative;
+            transition: border-color 0.3s;
+        }
+        .highlight-quote:hover {
+            border-left-color: var(--naranja-acento);
+        }
+
+        /* Game score pulse when increases */
+        .game-score.pulse span {
+            animation: softPulse 0.45s ease;
+            color: var(--verde-claro);
+        }
+
+        /* Mobile menu slide */
+        @media (max-width: 900px) {
+            .nav-list {
+                transition: max-height 0.4s var(--transition-smooth), opacity 0.3s ease;
+                overflow: hidden;
+            }
+        }
+
+        /* Reduce motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .floating-leaves { display: none; }
+        }
+
 </style>
 </head>
 <body>
+    <!-- Barra de progreso de scroll -->
+    <div id="scrollProgress" aria-hidden="true"></div>
+    <!-- Hojas decorativas flotantes (solo visual, no afecta contenido) -->
+    <div class="floating-leaves" id="floatingLeaves" aria-hidden="true"></div>
+    <!-- Toasts -->
+    <div id="toastContainer" aria-live="polite"></div>
+    <!-- Confetti -->
+    <canvas id="confettiCanvas" aria-hidden="true"></canvas>
 
     <!-- BARRA DE NAVEGACIÓN -->
     <nav class="navbar">
@@ -2671,17 +3049,221 @@
             renderMalestaresGrid();
             renderRecetasGrid();
             renderSabiduria();
+            initFloatingLeaves();
+            initRevealOnScroll();
+            initNavbarScroll();
+            initStaggerOnLoad();
+            initScrollProgress();
+            initImageFadeIn();
+            initLeafCursor();
+            showToast('🌿 Bienvenido a Verde Sanador', 2800);
+
+            // Rotar sabiduría cada 18 segundos con transición suave
+            setInterval(() => {
+                const box = document.getElementById('sabiduriaDia');
+                if (!box) return;
+                box.classList.add('updating');
+                setTimeout(() => {
+                    renderSabiduria();
+                    box.classList.remove('updating');
+                }, 320);
+            }, 18000);
 
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') cerrarModal();
             });
         });
 
+        /* ========== TOASTS ========== */
+        function showToast(msg, duration = 3000) {
+            const box = document.getElementById('toastContainer');
+            if (!box) return;
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            box.appendChild(t);
+            setTimeout(() => t.remove(), duration + 500);
+        }
+
+        /* ========== SCROLL PROGRESS ========== */
+        function initScrollProgress() {
+            const bar = document.getElementById('scrollProgress');
+            if (!bar) return;
+            window.addEventListener('scroll', () => {
+                const h = document.documentElement.scrollHeight - window.innerHeight;
+                const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+                bar.style.width = pct + '%';
+            }, { passive: true });
+        }
+
+        /* ========== IMAGE FADE-IN ========== */
+        function initImageFadeIn() {
+            document.querySelectorAll('img').forEach(img => {
+                if (img.complete) img.classList.add('loaded');
+                else img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+            });
+            // Observer for dynamically added images
+            const obs = new MutationObserver(muts => {
+                muts.forEach(m => {
+                    m.addedNodes.forEach(node => {
+                        if (node.tagName === 'IMG') {
+                            if (node.complete) node.classList.add('loaded');
+                            else node.addEventListener('load', () => node.classList.add('loaded'), { once: true });
+                        } else if (node.querySelectorAll) {
+                            node.querySelectorAll('img').forEach(img => {
+                                if (img.complete) img.classList.add('loaded');
+                                else img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+                            });
+                        }
+                    });
+                });
+            });
+            obs.observe(document.body, { childList: true, subtree: true });
+        }
+
+        /* ========== LEAF CURSOR TRAIL (desktop) ========== */
+        function initLeafCursor() {
+            if (window.matchMedia('(hover: none)').matches) return;
+            const leaves = ['🌿', '🍃', '🌱'];
+            let last = 0;
+            document.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - last < 80) return;
+                last = now;
+                const el = document.createElement('span');
+                el.className = 'leaf-cursor';
+                el.textContent = leaves[Math.floor(Math.random() * leaves.length)];
+                el.style.left = e.clientX + 'px';
+                el.style.top = e.clientY + 'px';
+                el.style.opacity = '0.55';
+                document.body.appendChild(el);
+                requestAnimationFrame(() => {
+                    el.style.transition = 'all 0.7s ease';
+                    el.style.opacity = '0';
+                    el.style.transform = `translate(${(Math.random()-0.5)*40}px, ${20+Math.random()*30}px) scale(0.4)`;
+                });
+                setTimeout(() => el.remove(), 750);
+            });
+        }
+
+        /* ========== CONFETTI ========== */
+        function launchConfetti(count = 60) {
+            const canvas = document.getElementById('confettiCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const colors = ['#52b788', '#2d6a4f', '#e07a5f', '#f4a261', '#95d5b2', '#74c69d'];
+            const pieces = Array.from({ length: count }, () => ({
+                x: Math.random() * canvas.width,
+                y: -20 - Math.random() * 80,
+                w: 6 + Math.random() * 8,
+                h: 8 + Math.random() * 10,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                vx: (Math.random() - 0.5) * 6,
+                vy: 2 + Math.random() * 4,
+                rot: Math.random() * 360,
+                vr: (Math.random() - 0.5) * 12
+            }));
+            let frames = 0;
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.08;
+                    p.rot += p.vr;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+                    ctx.restore();
+                });
+                frames++;
+                if (frames < 120) requestAnimationFrame(draw);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            draw();
+        }
+
+        /* ========== DINÁMICA VISUAL ========== */
+        function initFloatingLeaves() {
+            const container = document.getElementById('floatingLeaves');
+            if (!container) return;
+            const leaves = ['🌿', '🍃', '🌱', '☘️', '🍂'];
+            for (let i = 0; i < 14; i++) {
+                const span = document.createElement('span');
+                span.textContent = leaves[i % leaves.length];
+                span.style.left = Math.random() * 100 + '%';
+                span.style.animationDuration = (12 + Math.random() * 18) + 's';
+                span.style.animationDelay = (Math.random() * 12) + 's';
+                span.style.fontSize = (0.9 + Math.random() * 1.1) + 'rem';
+                container.appendChild(span);
+            }
+        }
+
+        function initRevealOnScroll() {
+            const els = document.querySelectorAll('.teoria-card, .feature-card, .nosotros-block, .section-header, .game-card, .detail-box, .botica-plus, .arcade-game');
+            if (!('IntersectionObserver' in window)) {
+                els.forEach(el => { el.classList.add('reveal', 'visible'); });
+                return;
+            }
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+            els.forEach(el => {
+                if (el.classList.contains('visible')) return;
+                el.classList.add('reveal');
+                // Si ya está en viewport al cargar, mostrar de inmediato
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.92 && rect.bottom > 0) {
+                    el.classList.add('visible');
+                } else {
+                    obs.observe(el);
+                }
+            });
+        }
+
+        function initNavbarScroll() {
+            const nav = document.querySelector('.navbar');
+            if (!nav) return;
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(() => {
+                    nav.classList.toggle('scrolled', window.scrollY > 24);
+                    ticking = false;
+                });
+            }, { passive: true });
+        }
+
+        function initStaggerOnLoad() {
+            const grids = document.querySelectorAll('.features-grid, .teoria-grid, .grid-malestares');
+            grids.forEach(g => g.classList.add('stagger-children'));
+        }
+
         function showPage(pageId) {
             document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
 
-            document.getElementById('page-' + pageId).classList.add('active');
+            const target = document.getElementById('page-' + pageId);
+            if (target) {
+                target.classList.add('active');
+                // Re-trigger stagger animations on grids
+                const grids = target.querySelectorAll('.grid-malestares, .grid-beneficios, .grid-recetas, .features-grid, .teoria-grid');
+                grids.forEach(g => {
+                    g.classList.remove('stagger-children');
+                    void g.offsetWidth; // force reflow
+                    g.classList.add('stagger-children');
+                });
+            }
             
             const navBtn = document.getElementById('nav-' + pageId);
             if(navBtn) navBtn.classList.add('active');
@@ -2691,10 +3273,16 @@
 
             if(pageId === 'beneficios') renderBeneficios();
             if(pageId === 'juegos') { renderJuego(); initExtraGamesOnce(); }
+            if(pageId === 'malestares') renderMalestaresGrid();
+            if(pageId === 'recetas') renderRecetasGrid();
+
+            // Re-observe reveals after page change
+            setTimeout(initRevealOnScroll, 60);
         }
 
         function renderMalestaresGrid() {
             const grid = document.getElementById('gridMalestares');
+            if (!grid) return;
             let html = '';
             for(let key in bdMalestares) {
                 const item = bdMalestares[key];
@@ -2706,6 +3294,9 @@
                 `;
             }
             grid.innerHTML = html;
+            grid.classList.remove('stagger-children');
+            void grid.offsetWidth;
+            grid.classList.add('stagger-children');
         }
 
         function openDetail(title) {
@@ -2736,6 +3327,7 @@
             document.getElementById('detail-receta-content').innerHTML = htmlPasos;
 
             showPage('detalle');
+            showToast(data.icon + ' Solución natural: ' + title);
         }
 
         /* Carga imágenes reales de plantas desde Wikipedia (nombre científico) */
@@ -2893,6 +3485,7 @@
 
         function renderBeneficios() {
             const container = document.getElementById('gridBeneficios');
+            if (!container) return;
             container.innerHTML = listaBeneficios.map((b, idx) => `
                 <div class="card-beneficio" onclick="abrirModalPlanta(${idx})">
                     <img src="${PLACEHOLDER_SVG}" alt="${b.planta}" class="card-beneficio-img" loading="lazy"
@@ -2909,6 +3502,9 @@
                 </div>
             `).join('');
             loadPlantImages(container);
+            container.classList.remove('stagger-children');
+            void container.offsetWidth;
+            container.classList.add('stagger-children');
         }
 
         async function abrirModalPlanta(idx) {
@@ -2930,6 +3526,7 @@
 
             document.getElementById('modalPlanta').classList.add('active');
             document.body.style.overflow = 'hidden';
+            showToast('📖 ' + item.planta + ' — historia ancestral');
         }
 
         function cerrarModal() {
@@ -2945,6 +3542,7 @@
 
         function renderRecetasGrid() {
             const container = document.getElementById('gridRecetas');
+            if (!container) return;
             container.innerHTML = recetarioGeneral.map(r => `
                 <div class="card-receta">
                     <h3>${r.titulo} <span class="receta-tag">${r.tag}</span></h3>
@@ -2955,6 +3553,9 @@
                     <div class="posologia-box">⏱️ Uso sugerido: ${r.posologia}</div>
                 </div>
             `).join('');
+            container.classList.remove('stagger-children');
+            void container.offsetWidth;
+            container.classList.add('stagger-children');
         }
 
         let preguntasOrden = [];
@@ -3000,6 +3601,7 @@
             const q = preguntasJuego[preguntasOrden[juegoActual]];
             const feedback = document.getElementById('gameFeedback');
             const btns = document.querySelectorAll('.btn-option');
+            const scoreEl = document.querySelector('.game-score');
 
             btns.forEach(b => b.disabled = true);
 
@@ -3008,6 +3610,13 @@
                 feedback.style.color = '#2d6a4f';
                 feedback.innerText = '¡Correcto! 🍃 (+10 puntos)';
                 btns.forEach(b => { if(b.textContent === q.options[q.correct]) b.style.background = '#d8f3dc'; });
+                if (scoreEl) { scoreEl.classList.add('pulse'); setTimeout(() => scoreEl.classList.remove('pulse'), 500); }
+                if (score >= 50 && score % 50 === 0) {
+                    launchConfetti(80);
+                    showToast('🎉 ¡' + score + ' puntos! Sigue así, sanador');
+                } else {
+                    launchConfetti(25);
+                }
             } else {
                 feedback.style.color = '#e63946';
                 feedback.innerText = 'Incorrecto. La respuesta era: ' + q.options[q.correct];
@@ -3019,6 +3628,14 @@
 
             document.getElementById('scoreText').innerText = score;
             document.getElementById('btnNextGame').style.display = 'inline-block';
+
+            // Celebrar puntuación final perfecta
+            if (juegoActual === preguntasOrden.length - 1 && score === preguntasOrden.length * 10) {
+                setTimeout(() => {
+                    launchConfetti(120);
+                    showToast('🏆 ¡Puntaje perfecto! Eres un verdadero sanador');
+                }, 400);
+            }
         }
 
         function siguientePregunta() {
