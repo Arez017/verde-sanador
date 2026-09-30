@@ -113,6 +113,30 @@ nav{
 .fund .card{border-top:3px solid var(--green)}
 
 /* MALESTARES */
+
+.mal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin:20px 0}
+.mal-card{
+  background:var(--card);border:1px solid rgba(82,183,136,.25);border-radius:16px;
+  padding:22px 16px;text-align:center;cursor:pointer;transition:.25s;
+}
+.mal-card:hover,.mal-card.active{
+  transform:translateY(-4px);border-color:var(--lime);
+  box-shadow:0 12px 28px rgba(45,106,79,.2);
+}
+.mal-card .mal-ico{font-size:2.2rem;display:block;margin-bottom:10px}
+.mal-card .mal-title{font-weight:700;color:var(--text);font-size:.98rem;line-height:1.3}
+.mal-detail-wrap{display:none;margin-top:18px}
+.mal-detail-wrap.show{display:block}
+.mal-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:720px){.mal-detail-grid{grid-template-columns:1fr}}
+.planta-item{margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed rgba(82,183,136,.25)}
+.planta-item:last-child{border-bottom:none}
+.planta-nombre{font-weight:800;color:var(--lime);font-size:1.05rem}
+.planta-desc{font-size:.92rem;color:var(--muted);margin-top:4px}
+.receta-box{background:rgba(82,183,136,.08);border:1px solid rgba(82,183,136,.25);border-radius:12px;padding:16px;margin-top:8px}
+.receta-box ol{padding-left:1.2rem;color:var(--muted);margin-top:8px}
+.receta-box li{margin-bottom:6px}
+
 .chips{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
 .chip{
   background:rgba(82,183,136,.12);border:1px solid rgba(82,183,136,.3);
@@ -340,7 +364,7 @@ footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:.9rem;bo
     </div>
 
     <div class="grid-2">
-      <img class="img-round" src="https://images.unsplash.com/photo-1466692476866-aef1dfb1e735?q=80&w=900&auto=format&fit=crop" alt="Plantas">
+      <img class="img-round" src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1000&auto=format&fit=crop" alt="Hojas y flora silvestre" loading="lazy" referrerpolicy="no-referrer">
       <div>
         <h2 style="font-family:'Playfair Display',serif;margin-bottom:14px">Nuestra Historia: Verde Sanador</h2>
         <p style="color:var(--muted);margin-bottom:12px">Somos un equipo de estudiantes e investigadores de El Alto. Diseñamos este proyecto enfocándonos en las plantas medicinales más valiosas de nuestro entorno cotidiano, científico y cultural.</p>
@@ -384,17 +408,23 @@ footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:.9rem;bo
   <section id="page-malestares" class="page">
     <div class="section-head">
       <h2>Guía de Afecciones y Soluciones Naturales</h2>
-      <p>Selecciona un malestar para ver plantas recomendadas y el protocolo de preparación.</p>
+      <p>Selecciona un malestar para ver las plantas recomendadas, su función y la preparación paso a paso. Información educativa; no sustituye atención médica.</p>
     </div>
-    <div class="chips" id="malestarChips"></div>
-    <div class="detail-box" id="malestarDetail">
-      <div class="card">
-        <h3>🌱 Plantas utilizadas</h3>
-        <div id="detailPlantas"></div>
+    <div class="mal-grid" id="malestarGrid"></div>
+    <div class="mal-detail-wrap" id="malestarDetail">
+      <button class="btn btn-ghost" type="button" id="malBackBtn" style="margin-bottom:12px">← Volver a la lista</button>
+      <div class="section-head" style="margin-bottom:12px">
+        <h2 id="detail-title">—</h2>
       </div>
-      <div class="card">
-        <h3>☕ Protocolo de preparación</h3>
-        <div id="detailProtocolo"></div>
+      <div class="mal-detail-grid">
+        <div class="card">
+          <h3>🌱 Plantas utilizadas</h3>
+          <div id="detailPlantas"></div>
+        </div>
+        <div class="card">
+          <h3>☕ Preparación</h3>
+          <div id="detailProtocolo"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -500,14 +530,355 @@ const PLANTAS = [
 ];
 
 const MALESTARES = [
-  {id:'resfrio',nombre:'Resfrío / Tos',plantas:['Wira Wira','Eucalipto','Muña'],protocolo:'Infusión de Wira Wira (1 cucharada de hojas secas en 250 ml de agua hirviendo, 10 min). Vahos de eucalipto 5–10 min, 2 veces al día. Opcional: agregar muña al mate.'},
-  {id:'digestion',nombre:'Cólicos / Digestión',plantas:['Muña','Manzanilla','Cedrón','Menta'],protocolo:'Mate de muña o manzanilla después de comer. Cedrón o menta si hay pesadez. Beber tibio, sin endulzar en exceso.'},
-  {id:'insomnio',nombre:'Insomnio / Nervios',plantas:['Toronjil','Manzanilla','Valeriana','Cedrón'],protocolo:'Infusión de toronjil o manzanilla 30–40 min antes de dormir. Valeriana en dosis baja si es necesario. Ambiente calmado.'},
-  {id:'soroche',nombre:'Soroche / Altura',plantas:['Coca','Chachacoma','Muña'],protocolo:'Mate de coca suave o mascado tradicional moderado. Chachacoma en infusión corta para cefalea de altura. Hidratación constante.'},
-  {id:'quemaduras',nombre:'Quemaduras / Piel',plantas:['Sábila','Matico','Caléndula'],protocolo:'Gel fresco de sábila sobre la zona limpia. Lavados suaves con matico o caléndula. No romper ampollas.'},
-  {id:'higado',nombre:'Hígado / Pesadez',plantas:['Boldo','Diente de León','Romero'],protocolo:'Mate de boldo o diente de león después de comidas grasas. Romero en dosis baja. Curas cortas (3–5 días).'},
-  {id:'energia',nombre:'Fatiga / Energía',plantas:['Coca','Maca','Romero'],protocolo:'Mate de coca por la mañana. Maca en polvo en batidos o agua tibia. Romero para concentración.'},
-  {id:'nauseas',nombre:'Náuseas',plantas:['Menta','Jengibre','Manzanilla'],protocolo:'Infusión de menta o jengibre fresco rallado. Manzanilla si hay irritación. Sorbos lentos.'},
+  {
+    nombre:'Mal de altura (Soroche)',
+    icon:'⛰️',
+    plantas:[
+      {nombre:'Coca',desc:'Aumenta la oxigenación en la sangre y atenúa la fatiga producida por la altura.'},
+      {nombre:'Muña',desc:'Asienta el estómago y elimina la náusea provocada por la falta de presión.'},
+      {nombre:'Chachacoma',desc:'Reduce la presión cefálica y calma el dolor pulsátil de cabeza.'},
+    ],
+    receta:{
+      titulo:'Mate Antisoroche de 3 Plantas',
+      ingredientes:'6 hojas de Coca, 1 ramita de Muña, 1 trocito de Chachacoma, 300 ml de agua caliente.',
+      pasos:['Verter el agua caliente (sin hervir en exceso) sobre las plantas.','Tapar el recipiente y dejar reposar durante 5 a 7 minutos.','Colar y beber caliente a sorbos suaves.']
+    }
+  },
+  {
+    nombre:'Tos y Congestión Respiratoria',
+    icon:'🗣️',
+    plantas:[
+      {nombre:'Wira Wira',desc:'Promueve la expulsión de flemas y suaviza los bronquios.'},
+      {nombre:'Eucalipto',desc:'Despeja la nariz y desinfecta las vías aéreas.'},
+      {nombre:'Llantén',desc:'Desinflama la garganta irritada por la tos constante.'},
+    ],
+    receta:{
+      titulo:'Infusión Respiratoria Triple Acción',
+      ingredientes:'1 flor de Wira Wira, 2 hojas de Eucalipto, 2 hojas de Llantén, 300 ml de agua.',
+      pasos:['Hervir las hojas de eucalipto, llantén y wira wira en agua durante 4 minutos.','Servir caliente. Se puede endulzar con miel de abeja.']
+    }
+  },
+  {
+    nombre:'Gastritis y Acidez Gástrica',
+    icon:'🔥',
+    plantas:[
+      {nombre:'Sábila',desc:'Su gel recubre el estómago y ayuda a cicatrizar las mucosas irritadas.'},
+      {nombre:'Manzanilla',desc:'Desinflama la pared estomacal y reduce el ardor.'},
+      {nombre:'Llantén',desc:'Potente antiinflamatorio para las paredes gástricas.'},
+    ],
+    receta:{
+      titulo:'Protector Gástrico de Sábila, Manzanilla y Llantén',
+      ingredientes:'2 cucharadas de gel de Sábila (bien desyodado), 1 taza de infusión de Manzanilla y Llantén tibia.',
+      pasos:['Mezclar o licuar suavemente el gel limpio de sábila con la infusión tibia.','Tomar preferentemente en ayunas.']
+    }
+  },
+  {
+    nombre:'Dolor Estomacal y Gases',
+    icon:'🫄',
+    plantas:[
+      {nombre:'Muña',desc:'Disuelve activamente los gases y combate la pesadez postprandial.'},
+      {nombre:'Anís',desc:'Elimina los espasmos del intestino y la hinchazón.'},
+      {nombre:'Menta',desc:'Alivia rápidamente los retortijones estomacales.'},
+    ],
+    receta:{
+      titulo:'Infusión Digestiva Digest-Plus',
+      ingredientes:'1 ramita de Muña, 1 media cucharadita de semillas de Anís, 4 hojas de Menta, 250 ml de agua.',
+      pasos:['Colocar las plantas en una taza y agregar agua hirviendo.','Dejar reposar 5 minutos con tapa antes de beber.']
+    }
+  },
+  {
+    nombre:'Insomnio, Ansiedad y Estrés',
+    icon:'🌙',
+    plantas:[
+      {nombre:'Toronjil',desc:'Tranquiliza el sistema nervioso y ayuda a conciliar el sueño.'},
+      {nombre:'Manzanilla',desc:'Aporta una sensación de relajación corporal general.'},
+      {nombre:'Cedrón',desc:'Alivia el estrés y aquieta las emociones alteradas.'},
+    ],
+    receta:{
+      titulo:'Mate Relax de Toronjil, Cedrón y Manzanilla',
+      ingredientes:'1 cucharadita de Toronjil, 1 ramita de Cedrón, 1 cucharadita de Manzanilla, 250 ml de agua.',
+      pasos:['Infusionar las plantas en agua caliente durante 8 minutos.','Tomar entibiado unos 30 minutos antes de ir a dormir.']
+    }
+  },
+  {
+    nombre:'Problemas Hepáticos y Digestión Pesada',
+    icon:'🧪',
+    plantas:[
+      {nombre:'Diente de León',desc:'Estimula la producción de bilis y limpia el hígado de toxinas.'},
+      {nombre:'Romero',desc:'Favorece el procesamiento de comidas grasas o pesadas.'},
+    ],
+    receta:{
+      titulo:'Tónico Depurativo Hepático',
+      ingredientes:'1 cucharadita de Diente de León, 1 ramita pequeña de Romero, 250 ml de agua.',
+      pasos:['Hervir el diente de león y el romero a fuego lento durante 3 minutos.','Colar y beber tras las comidas abundantes.']
+    }
+  },
+  {
+    nombre:'Heridas y Dolor de Garganta',
+    icon:'🩹',
+    plantas:[
+      {nombre:'Matico',desc:'Acelera la cicatrización en la piel o actúa como antiséptico para la garganta.'},
+      {nombre:'Sábila',desc:'Refresca las quemaduras y regenera los tejidos dañados.'},
+      {nombre:'Llantén',desc:'Desinfecta y ayuda a cerrar llagas bucales.'},
+    ],
+    receta:{
+      titulo:'Gárgaras o Lavado Antiséptico de Matico y Llantén',
+      ingredientes:'4 hojas de Matico, 4 hojas de Llantén, 300 ml de agua.',
+      pasos:['Hervir las hojas durante 5 minutos y dejar enfriar.','Usar el líquido tibio para gárgaras de garganta o lavados sobre la piel limpia.']
+    }
+  },
+  {
+    nombre:'Fatiga Física y Cansancio Agotador',
+    icon:'⚡',
+    plantas:[
+      {nombre:'Coca',desc:'Estimula de forma natural el metabolismo y brinda energía sostenida.'},
+      {nombre:'Cedrón',desc:'Revitaliza el ánimo y disminuye la tensión tónica acumulada.'},
+      {nombre:'Romero',desc:'Activa la circulación y reduce el agotamiento mental.'},
+    ],
+    receta:{
+      titulo:'Tónico Típico Revitalizante Complejo',
+      ingredientes:'5 hojas de Coca, 1 ramita fresca de Cedrón, 1 ramita de Romero, 250 ml de agua a 85°C.',
+      pasos:['Verter el agua tibia-caliente sobre las plantas en un pocillo.','Dejar infusionar por 5 minutos tapado.','Tomar a primera hora de la mañana para renovar las energías.']
+    }
+  },
+  {
+    nombre:'Cólicos Menstruales',
+    icon:'🩸',
+    plantas:[
+      {nombre:'Manzanilla',desc:'Relaja la musculatura uterina y reduce el dolor de tipo cólico.'},
+      {nombre:'Cedrón',desc:'Antiespasmódico suave que ayuda a calmar contracciones.'},
+      {nombre:'Toronjil',desc:'Disminuye la tensión nerviosa asociada a los cólicos.'},
+    ],
+    receta:{
+      titulo:'Infusión Antiespasmódica Menstrual',
+      ingredientes:'1 cucharadita de Manzanilla, 1 ramita de Cedrón, 1 cucharadita de Toronjil, 250 ml de agua.',
+      pasos:['Verter agua caliente sobre las hierbas y tapar 8 minutos.','Colar y beber tibia, preferentemente 2 a 3 veces al día durante el periodo.']
+    }
+  },
+  {
+    nombre:'Dolor de Cabeza y Migraña Leve',
+    icon:'🤕',
+    plantas:[
+      {nombre:'Chachacoma',desc:'Alivia la presión cefálica frecuente en altura.'},
+      {nombre:'Romero',desc:'Mejora la circulación y reduce la sensación de pesadez.'},
+      {nombre:'Menta',desc:'Refresca y ayuda a despejar la cabeza.'},
+    ],
+    receta:{
+      titulo:'Mate Cefálico de Chachacoma, Romero y Menta',
+      ingredientes:'1 trocito de Chachacoma, 1 ramita de Romero, 4-5 hojas de Menta, 250 ml de agua.',
+      pasos:['Infusionar 5 a 7 minutos con agua caliente (no hirviendo).','Beber a sorbos lentos. Se puede aplicar también un paño con la infusión tibia en la frente.']
+    }
+  },
+  {
+    nombre:'Resfriado y Gripe Leve',
+    icon:'🤧',
+    plantas:[
+      {nombre:'Eucalipto',desc:'Descongestiona y desinfecta las vías respiratorias.'},
+      {nombre:'Wira Wira',desc:'Expectorante ideal para la tos asociada al resfriado.'},
+      {nombre:'Jengibre',desc:'Aporta calor y ayuda a aliviar malestar general.'},
+    ],
+    receta:{
+      titulo:'Vapor e Infusión Antigripal',
+      ingredientes:'2 hojas de Eucalipto, 1 flor de Wira Wira, 3 rodajas de Jengibre, 400 ml de agua.',
+      pasos:['Hervir suavemente 4 minutos. Inhalar el vapor cubierto con una toalla 5 minutos.','Luego beber la infusión caliente endulzada con miel si se desea.']
+    }
+  },
+  {
+    nombre:'Náuseas y Mareos',
+    icon:'🤢',
+    plantas:[
+      {nombre:'Muña',desc:'Asienta el estómago y reduce las náuseas de origen digestivo o de altura.'},
+      {nombre:'Menta',desc:'Antiemética rápida y refrescante.'},
+      {nombre:'Jengibre',desc:'Clásico aliviador de náuseas y mareos.'},
+    ],
+    receta:{
+      titulo:'Infusión Antináuseas Rápida',
+      ingredientes:'1 ramita de Muña, 4 hojas de Menta, 2 rodajas finas de Jengibre, 250 ml de agua.',
+      pasos:['Verter agua caliente y dejar reposar 5 minutos.','Beber a sorbos pequeños. Ideal después de comidas o ante mareo por altura.']
+    }
+  },
+  {
+    nombre:'Quemaduras Leves e Irritaciones de Piel',
+    icon:'🔥',
+    plantas:[
+      {nombre:'Sábila',desc:'Gel refrescante y regenerador de la piel.'},
+      {nombre:'Caléndula',desc:'Calmante tradicional para irritaciones leves.'},
+      {nombre:'Matico',desc:'Antiséptico y cicatrizante de uso externo.'},
+    ],
+    receta:{
+      titulo:'Aplicación Tópica de Sábila y Caléndula',
+      ingredientes:'Gel limpio de Sábila, infusión fría de Caléndula y/o hojas de Matico.',
+      pasos:['Lavar bien la zona con agua limpia.','Aplicar gel de sábila puro o mezclado con unas gotas de infusión fría de caléndula/matico.','Repetir 2-3 veces al día. No usar en quemaduras graves ni heridas abiertas profundas.']
+    }
+  },
+  {
+    nombre:'Diarrea Leve y Molestias Intestinales',
+    icon:'🚽',
+    plantas:[
+      {nombre:'Llantén',desc:'Astringente suave que ayuda a regular el tránsito.'},
+      {nombre:'Manzanilla',desc:'Antiinflamatoria intestinal y calmante.'},
+      {nombre:'Anís',desc:'Reduce gases y espasmos asociados.'},
+    ],
+    receta:{
+      titulo:'Infusión Reguladora Intestinal',
+      ingredientes:'2 hojas de Llantén, 1 cucharadita de Manzanilla, 1/2 cucharadita de Anís, 250 ml de agua.',
+      pasos:['Hervir suavemente 3 minutos y reposar 5 minutos más.','Colar y beber tibia. Acompañar con hidratación abundante. Si persiste, consultar profesional.']
+    }
+  },
+  {
+    nombre:'Falta de Apetito',
+    icon:'🍽️',
+    plantas:[
+      {nombre:'Diente de León',desc:'Tónico amargo que estimula las secreciones digestivas.'},
+      {nombre:'Romero',desc:'Estimula el apetito y mejora la digestión.'},
+      {nombre:'Hierba Luisa',desc:'Aroma agradable que invita a comer.'},
+    ],
+    receta:{
+      titulo:'Tónico Amargo Aperitivo',
+      ingredientes:'1 cucharadita de Diente de León, 1 ramita pequeña de Romero, 1 hoja de Hierba Luisa, 200 ml de agua.',
+      pasos:['Infusionar 5 minutos. Beber 15-20 minutos antes de las comidas principales.','Sabor amargo intencional: ayuda a “despertar” el estómago.']
+    }
+  },
+  {
+    nombre:'Tensión Muscular y Dolores por Frío',
+    icon:'🧊',
+    plantas:[
+      {nombre:'Romero',desc:'Estimula la circulación local y alivia la rigidez.'},
+      {nombre:'Eucalipto',desc:'Sensación de calor y alivio en fricciones o baños.'},
+      {nombre:'Thola',desc:'Uso tradicional en baños y sahumerios del altiplano.'},
+    ],
+    receta:{
+      titulo:'Baño o Fricción Aromática Caliente',
+      ingredientes:'Ramitas de Romero, hojas de Eucalipto y (opcional) Thola, 1-2 litros de agua.',
+      pasos:['Hervir las plantas 8-10 minutos.','Usar el líquido caliente (no quemante) para baños de pies/manos o fricciones suaves en zonas adoloridas.','No aplicar aceite esencial puro directamente sobre la piel.']
+    }
+  },
+  {
+    nombre:'Problemas de Concentración y Cansancio Mental',
+    icon:'🧠',
+    plantas:[
+      {nombre:'Romero',desc:'Tradicionalmente asociado a la memoria y el estado de alerta.'},
+      {nombre:'Coca',desc:'Ayuda a mantener la energía y claridad en la altura.'},
+      {nombre:'Menta',desc:'Refresca y despeja la mente.'},
+    ],
+    receta:{
+      titulo:'Mate de Claridad Mental',
+      ingredientes:'1 ramita de Romero, 4-5 hojas de Coca, 3 hojas de Menta, 250 ml de agua a 80-85°C.',
+      pasos:['Infusionar 5 minutos tapado.','Beber por la mañana o antes de estudiar/trabajar. No exceder 2 tazas al día.']
+    }
+  },
+  {
+    nombre:'Estreñimiento Leve',
+    icon:'🚽',
+    plantas:[
+      {nombre:'Diente de León',desc:'Estimula suavemente el tránsito intestinal y la bilis.'},
+      {nombre:'Hinojo',desc:'Relaja el intestino y reduce la hinchazón.'},
+      {nombre:'Malva',desc:'Emoliente: suaviza el tránsito sin irritar.'},
+    ],
+    receta:{
+      titulo:'Infusión Suave Reguladora',
+      ingredientes:'1 cucharadita de diente de león, 1/2 cucharadita de hinojo, 1 cucharadita de malva, 300 ml de agua.',
+      pasos:['Hervir el agua y verter sobre las plantas.','Reposar 8–10 minutos tapado.','Beber tibio por la mañana durante 3 a 5 días.']
+    }
+  },
+  {
+    nombre:'Alergia Leve y Congestión Nasal',
+    icon:'🌼',
+    plantas:[
+      {nombre:'Eucalipto',desc:'Despeja vías respiratorias y alivia la congestión.'},
+      {nombre:'Menta',desc:'Sensación de frescura y alivio nasal.'},
+      {nombre:'Manzanilla',desc:'Calma irritación de mucosas en procesos leves.'},
+    ],
+    receta:{
+      titulo:'Vaho Descongestionante',
+      ingredientes:'4–5 hojas de eucalipto, 4 hojas de menta, 1 cucharadita de manzanilla, agua caliente.',
+      pasos:['Colocar las plantas en un recipiente con agua bien caliente.','Inhalar el vapor 5–8 minutos con toalla sobre la cabeza.','Repetir 1–2 veces al día según necesidad.']
+    }
+  },
+  {
+    nombre:'Dolor de Garganta e Irritación',
+    icon:'🎤',
+    plantas:[
+      {nombre:'Llantén',desc:'Antiinflamatorio de garganta y mucosas.'},
+      {nombre:'Salvia',desc:'Uso tradicional en gárgaras para aliviar la irritación.'},
+      {nombre:'Matico',desc:'Astringente suave y antiséptico tradicional.'},
+    ],
+    receta:{
+      titulo:'Gárgaras y Mate de Garganta',
+      ingredientes:'2 hojas de llantén, 1 cucharadita de salvia, 1 hoja de matico, 250 ml de agua.',
+      pasos:['Preparar infusión 8 minutos.','Usar tibia en gárgaras 2–3 veces y beber el resto.','No tragar si se usa solo como gárgara concentrada.']
+    }
+  },
+  {
+    nombre:'Ansiedad Diurna y Nerviosismo',
+    icon:'💭',
+    plantas:[
+      {nombre:'Toronjil',desc:'Tranquiliza sin generar sueño pesado en dosis moderada.'},
+      {nombre:'Lavanda',desc:'Aromática relajante; útil en infusión o inhalación suave.'},
+      {nombre:'Tilo',desc:'Tradicional para calmar el sistema nervioso.'},
+    ],
+    receta:{
+      titulo:'Mate Calmamente',
+      ingredientes:'1 cucharadita de toronjil, 1/2 de tilo, 1 pizca de lavanda, 250 ml de agua.',
+      pasos:['Agua caliente sobre las hierbas (no hervor largo).','Reposar 6–8 minutos tapado.','Beber por la tarde o cuando haya nerviosismo.']
+    }
+  },
+  {
+    nombre:'Resaca Digestiva / Pesadez Post Comida',
+    icon:'🍽️',
+    plantas:[
+      {nombre:'Boldo',desc:'Apoyo tradicional hepático tras comidas pesadas.'},
+      {nombre:'Menta',desc:'Alivia pesadez y fresca el aliento digestivo.'},
+      {nombre:'Anís',desc:'Reduce gases y cólicos postprandiales.'},
+    ],
+    receta:{
+      titulo:'Mate Digestivo Post Comida',
+      ingredientes:'1 hoja de boldo (o 1/2 cucharadita), 4 hojas de menta, 1/2 cucharadita de anís, 250 ml de agua.',
+      pasos:['Infusión 5–7 minutos.','Beber tibio 20–30 minutos después de comer.','No abusar del boldo: máximo unos días seguidos.']
+    }
+  },
+  {
+    nombre:'Piel Irritada / Picazón Leve',
+    icon:'🧴',
+    plantas:[
+      {nombre:'Caléndula',desc:'Calmante de uso externo tradicional.'},
+      {nombre:'Sábila',desc:'Gel refrescante y regenerador de la piel.'},
+      {nombre:'Manzanilla',desc:'Compresas suaves antiinflamatorias.'},
+    ],
+    receta:{
+      titulo:'Compresa y Gel Calmante',
+      ingredientes:'Infusión fuerte de caléndula o manzanilla; gel limpio de sábila.',
+      pasos:['Aplicar compresa tibia de la infusión 10 minutos.','Luego una capa fina de gel de sábila.','Repetir 2 veces al día sobre piel limpia.']
+    }
+  },
+  {
+    nombre:'Tos Seca e Irritativa',
+    icon:'😮‍💨',
+    plantas:[
+      {nombre:'Wira Wira',desc:'Expectorante y suavizante de bronquios.'},
+      {nombre:'Malva',desc:'Emoliente de garganta y vías altas.'},
+      {nombre:'Tomillo',desc:'Aromática tradicional para vías respiratorias.'},
+    ],
+    receta:{
+      titulo:'Infusión para Tos Seca',
+      ingredientes:'1 flor de wira wira, 1 cucharadita de malva, 1/2 de tomillo, 300 ml de agua.',
+      pasos:['Hervir suavemente 4 minutos o reposar 10 minutos.','Colar y beber tibio 2–3 veces al día.','Opcional: una cucharadita de miel si no hay contraindicación.']
+    }
+  },
+  {
+    nombre:'Frío en el Cuerpo / Manos y Pies Fríos',
+    icon:'🥶',
+    plantas:[
+      {nombre:'Romero',desc:'Estimula la circulación de forma tradicional.'},
+      {nombre:'Jengibre',desc:'Calienta y activa la sensación interna.'},
+      {nombre:'Canela / Thola',desc:'Aromáticas de clima frío altiplánico (thola en uso local).'},
+    ],
+    receta:{
+      titulo:'Mate Caliente Circulatorio',
+      ingredientes:'1 ramita de romero, 2 rodajas de jengibre fresco, 250–300 ml de agua.',
+      pasos:['Hervir jengibre 3 minutos; agregar romero 2 minutos más.','Beber caliente, preferible en la mañana o tras exposición al frío.','Acompañar con movimiento suave y abrigo.']
+    }
+  },
 ];
 
 const RECETAS = [
@@ -572,21 +943,50 @@ document.querySelectorAll('[data-page]').forEach(el=>{
 });
 
 /* ========== MALESTARES ========== */
-const chips=document.getElementById('malestarChips');
-const detail=document.getElementById('malestarDetail');
-MALESTARES.forEach(m=>{
-  const b=document.createElement('button');
-  b.className='chip';b.textContent=m.nombre;
-  b.onclick=()=>{
-    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-    b.classList.add('active');
-    detail.classList.add('show');
-    document.getElementById('detailPlantas').innerHTML=m.plantas.map(p=>`<span class="plant-tag">${p}</span>`).join('')+
-      `<p style="margin-top:12px;color:var(--muted)">${m.plantas.map(n=>PLANTAS.find(x=>x.planta===n)).filter(Boolean).map(p=>`<strong>${p.planta}</strong>: ${p.desc}`).join('<br>')}</p>`;
-    document.getElementById('detailProtocolo').innerHTML=`<p style="color:var(--muted)">${m.protocolo}</p>`;
-  };
-  chips.appendChild(b);
-});
+const malGrid=document.getElementById('malestarGrid');
+const malDetail=document.getElementById('malestarDetail');
+function openMalestar(idx){
+  const m=MALESTARES[idx];
+  if(!m) return;
+  document.querySelectorAll('.mal-card').forEach(c=>c.classList.remove('active'));
+  const card=malGrid.querySelector(`[data-idx="${idx}"]`);
+  if(card) card.classList.add('active');
+  document.getElementById('detail-title').textContent=(m.icon||'🌿')+' '+m.nombre;
+  document.getElementById('detailPlantas').innerHTML=m.plantas.map(p=>
+    `<div class="planta-item"><div class="planta-nombre">${p.nombre}</div><div class="planta-desc">${p.desc}</div></div>`
+  ).join('');
+  const r=m.receta||{};
+  document.getElementById('detailProtocolo').innerHTML=`
+    <p style="font-weight:700;color:var(--lime);font-size:1.05rem">${r.titulo||'Preparación'}</p>
+    <p style="margin-top:8px;color:var(--muted)"><strong>Ingredientes:</strong> ${r.ingredientes||''}</p>
+    <div class="receta-box">
+      <p style="font-weight:700;margin:0 0 6px">Pasos:</p>
+      <ol>${(r.pasos||[]).map(p=>`<li>${p}</li>`).join('')}</ol>
+    </div>
+    <p style="margin-top:12px;font-size:.85rem;color:var(--muted)">Uso educativo y cultural. Ante síntomas fuertes o persistentes, consulta a un profesional de la salud.</p>`;
+  malGrid.style.display='none';
+  malDetail.classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeMalestar(){
+  malDetail.classList.remove('show');
+  malGrid.style.display='grid';
+  document.querySelectorAll('.mal-card').forEach(c=>c.classList.remove('active'));
+}
+if(malGrid){
+  malGrid.innerHTML=MALESTARES.map((m,i)=>`
+    <div class="mal-card" data-idx="${i}" role="button" tabindex="0">
+      <span class="mal-ico">${m.icon||'🌿'}</span>
+      <span class="mal-title">${m.nombre}</span>
+    </div>`).join('');
+  malGrid.querySelectorAll('.mal-card').forEach(card=>{
+    const go=()=>openMalestar(card.dataset.idx);
+    card.addEventListener('click',go);
+    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+  });
+}
+const malBackBtn=document.getElementById('malBackBtn');
+if(malBackBtn) malBackBtn.addEventListener('click',closeMalestar);
 
 /* ========== CATÁLOGO ========== */
 const regions=['Todas',...new Set(PLANTAS.map(p=>p.region))];
