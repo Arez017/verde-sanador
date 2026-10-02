@@ -236,11 +236,35 @@ nav{
 .modal .badge{display:inline-block;background:rgba(46,204,113,.2);color:var(--green);padding:6px 12px;border-radius:8px;font-weight:700;margin-bottom:14px;font-size:.9rem}
 
 /* RECETAS */
-.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
-.recipe-card{background:var(--card);border-radius:18px;padding:22px;border:1px solid rgba(82,183,136,.15)}
-.recipe-card h4{margin-bottom:8px;color:var(--lime)}
-.recipe-card ol{padding-left:18px;color:var(--muted);font-size:.95rem}
-.recipe-card ol li{margin:6px 0}
+.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.recipe-card{
+  background:var(--card);border-radius:20px;padding:0;border:1px solid rgba(82,183,136,.18);
+  position:relative;overflow:hidden;min-height:220px;
+  transition:transform .25s, box-shadow .25s;
+}
+.recipe-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.35)}
+.recipe-card .recipe-card-bg{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:.16;pointer-events:none;z-index:0;
+  filter:saturate(1.15) brightness(.8);
+}
+.recipe-card .recipe-card-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(165deg,rgba(6,22,16,.94) 0%,rgba(8,28,20,.88) 40%,rgba(10,32,22,.82) 100%);
+}
+.recipe-card .recipe-card-inner{position:relative;z-index:1;padding:22px 22px 20px}
+.recipe-card .recipe-thumbs{
+  display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;
+}
+.recipe-card .recipe-thumb{
+  width:44px;height:44px;border-radius:50%;
+  background-size:cover;background-position:center;
+  border:2px solid rgba(168,230,207,.4);
+  box-shadow:0 3px 10px rgba(0,0,0,.3);
+}
+.recipe-card h4{margin:0 0 12px;color:var(--lime);font-size:1.08rem;line-height:1.3}
+.recipe-card ol{padding-left:18px;color:var(--muted);font-size:.95rem;margin:0}
+.recipe-card ol li{margin:7px 0;line-height:1.4}
 
 /* ============ JUEGOS ============ */
 .games-hub{margin-top:10px}
@@ -417,6 +441,10 @@ footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:.9rem;bo
       <p>Comprender el poder curativo de las plantas requiere analizar los compuestos biológicos activos desde la perspectiva holística e histórica andina.</p>
     </div>
     <div class="fund">
+      <div class="card">
+        <h3>1. Principios Activos y Fitocomplejos</h3>
+        <p style="color:var(--muted)">Las plantas medicinales no actúan mediante un solo compuesto, sino a través de un fitocomplejo: flavonoides, alcaloides, taninos y aceites esenciales en sinergia, con menores efectos secundarios.</p>
+      </div>
       <div class="card">
         <h3>2. Botánica de la Altura y Clima Frío</h3>
         <p style="color:var(--muted)">En el altiplano de El Alto, plantas como Chachacoma y Wira Wira concentran aceites aromáticos y resinas para resistir UV y frío, potenciando sus virtudes terapéuticas.</p>
@@ -941,6 +969,25 @@ const RECETAS = [
   {titulo:'Digestivo post-almuerzo',pasos:['Muña o cedrón o boldo (una sola base).','Infusionar 5–8 min.','Beber sin apuro después de comer.','Evitar endulzar con exceso de azúcar.']},
   {titulo:'Gel de sábila para piel',pasos:['Cortar hoja madura y lavar.','Extraer gel transparente (desechar látex amarillo).','Aplicar en zona limpia 2–3 veces al día.','Guardar gel restante en refrigeración 2–3 días.']},
   {titulo:'Tónico hepático suave',pasos:['Diente de león (hojas/raíz) o boldo.','Decocción suave 5 min si es raíz.','Una taza al día, ciclos cortos.','Acompañar con comida ligera.']},
+  {titulo:'Antisoroche de tres plantas (Coca + Muña + Chachacoma)',pasos:['Preparar 300 ml de agua caliente (sin hervor fuerte).','Agregar 6 hojas de coca, 1 ramita de muña y un trocito de chachacoma.','Tapar y reposar 5–7 minutos.','Colar y beber a sorbos suaves.']},
+  {titulo:'Infusión respiratoria triple (Wira Wira + Eucalipto + Llantén)',pasos:['Poner 1 flor de wira wira, 2 hojas de eucalipto y 2 de llantén en 300 ml de agua.','Hervir suavemente 4 minutos.','Servir caliente; opcional miel de abeja.','Tomar 1–2 tazas al día en congestión.']},
+  {titulo:'Protector gástrico (Sábila + Manzanilla + Llantén)',pasos:['Preparar infusión tibia de manzanilla y llantén (1 taza).','Mezclar con 2 cucharadas de gel limpio de sábila.','Tomar preferentemente en ayunas.','No sustituye evaluación médica si hay dolor intenso.']},
+  {titulo:'Mate antiespasmódico (Muña + Anís + Menta)',pasos:['Usar una pizca de cada planta por taza de agua caliente.','Infusionar 5–8 minutos tapado.','Colar y beber despacio tras las comidas.','Útil ante gases o retortijones leves.']},
+  {titulo:'Relajante nocturno (Toronjil + Cedrón + Manzanilla)',pasos:['1 cucharadita de toronjil, 1 de manzanilla y una ramita de cedrón.','Agua hirviendo, tapar 8–10 minutos.','Beber 20–30 minutos antes de dormir.','Ambiente tranquilo favorece el efecto.']},
+  {titulo:'Gárgaras antisépticas (Matico + Llantén)',pasos:['Hervir 4 hojas de matico y 4 de llantén en 300 ml de agua 5 minutos.','Dejar enfriar hasta tibia.','Hacer gárgaras 2–3 veces al día.','No tragar si el sabor resulta muy intenso.']},
+  {titulo:'Tónico revitalizante (Coca + Cedrón + Romero)',pasos:['5 hojas de coca, 1 ramita de cedrón y 1 de romero.','Verter 250 ml de agua a unos 85 °C.','Infusionar 5 minutos tapado.','Tomar por la mañana para renovar energías.']},
+  {titulo:'Mate para cólicos (Manzanilla + Cedrón + Toronjil)',pasos:['Combinar una cucharadita de cada planta por taza.','Infusionar 7–10 minutos.','Beber tibia, a sorbos.','Puede repetirse 1–2 veces el mismo día si hace falta.']},
+  {titulo:'Baño aromático de romero y eucalipto',pasos:['Hervir un buen puñado de romero y algunas hojas de eucalipto.','Colar e incorporar al agua del baño tibia.','Reposar 15–20 minutos.','Secar sin enjuagar del todo para conservar el aroma.']},
+  {titulo:'Infusión digestiva de hierba luisa y menta',pasos:['1 hoja de hierba luisa y unas hojas de menta por taza.','Agua caliente, reposar 5–7 minutos.','Beber después de comidas abundantes.','Aroma fresco; no requiere endulzar.']},
+  {titulo:'Mate de boldo y diente de león',pasos:['1 cucharadita de boldo y 1 de diente de león (hoja o raíz).','Si hay raíz, hervir 3–5 minutos suaves.','Colar y tomar una taza al día en ciclos cortos.','Acompañar con comida ligera.']},
+  {titulo:'Aplicación tópica de sábila y caléndula',pasos:['Lavar bien la zona afectada.','Aplicar gel limpio de sábila solo o con unas gotas de infusión fría de caléndula.','Repetir 2–3 veces al día.','No usar en quemaduras graves ni heridas profundas.']},
+  {titulo:'Infusión reguladora (Llantén + Manzanilla + Anís)',pasos:['2 hojas de llantén, 1 cucharadita de manzanilla y media de anís.','Hervir suavemente 3 minutos y reposar 5 más.','Colar y beber tibia.','Hidratar bien el resto del día.']},
+  {titulo:'Tónico aperitivo amargo (Diente de León + Romero)',pasos:['1 cucharadita de diente de león y 1 ramita pequeña de romero.','Infusionar 5 minutos en 200 ml de agua.','Beber 15–20 minutos antes de las comidas.','El amargor ayuda a “despertar” el estómago.']},
+  {titulo:'Sahumerio o vaho de thola y eucalipto',pasos:['Calentar agua con ramas de thola y hojas de eucalipto.','Inhalar el vapor con precaución 5–8 minutos.','Ventilar la habitación después.','Uso tradicional en frío del altiplano.']},
+  {titulo:'Mate de cedrón y toronjil para el ánimo',pasos:['1 ramita de cedrón y 1 cucharadita de toronjil por taza.','Agua caliente, reposar 6–8 minutos.','Beber a media tarde o al caer la noche.','Aroma cítrico y suave.']},
+  {titulo:'Infusión de valeriana y manzanilla',pasos:['Usar dosis moderada de valeriana (según presentación) y manzanilla.','Infusionar 8–10 minutos.','Tomar por la noche, no conducir después.','No combinar con sedantes sin consejo profesional.']},
+  {titulo:'Mate de paico (uso tradicional digestivo)',pasos:['Usar pocas hojas de paico por taza (sabor intenso).','Infusionar 4–6 minutos.','Beber en cantidad moderada.','Evitar en embarazo; no abusar de la dosis.']},
+  {titulo:'Compresa de matico para piel',pasos:['Preparar infusión concentrada de hojas de matico.','Dejar enfriar y empapar una gasa limpia.','Aplicar sobre la zona limpia 10–15 minutos.','Repetir 1–2 veces al día si es necesario.']},
 ];
 
 const QUIZ = [
@@ -1093,10 +1140,32 @@ document.getElementById('modalBg').onclick=e=>{if(e.target.id==='modalBg')e.targ
 
 /* ========== RECETAS ========== */
 const rg=document.getElementById('recipeGrid');
+/* Extrae nombres de plantas conocidos del título/pasos para asociar imágenes (sin alterar datos) */
+function plantasEnReceta(r){
+  const texto = ((r.titulo||'') + ' ' + (r.pasos||[]).join(' ')).toLowerCase();
+  const halladas = [];
+  const vistos = new Set();
+  // Ordenar por longitud desc para preferir "Diente de León" sobre coincidencias parciales
+  const nombres = Object.keys(PLANTA_IMG).sort((a,b)=>b.length-a.length);
+  for(const n of nombres){
+    const key = n.toLowerCase();
+    if(texto.includes(key) && !vistos.has(key)){
+      vistos.add(key);
+      halladas.push({nombre:n, img:PLANTA_IMG[n]});
+    }
+  }
+  return halladas;
+}
 RECETAS.forEach(r=>{
   const d=document.createElement('div');
   d.className='recipe-card';
-  d.innerHTML=`<h4>🍵 ${r.titulo}</h4><ol>${r.pasos.map(s=>`<li>${s}</li>`).join('')}</ol>`;
+  const plantas = plantasEnReceta(r);
+  const bgImg = plantas[0]?.img || '';
+  const bgHtml = bgImg ? `<div class="recipe-card-bg" style="background-image:url('${bgImg}')"></div>` : '';
+  const thumbsHtml = plantas.length
+    ? `<div class="recipe-thumbs">${plantas.slice(0,4).map(p=>`<div class="recipe-thumb" style="background-image:url('${p.img}')" title="${p.nombre}"></div>`).join('')}</div>`
+    : '';
+  d.innerHTML=`${bgHtml}<div class="recipe-card-inner">${thumbsHtml}<h4>🍵 ${r.titulo}</h4><ol>${r.pasos.map(s=>`<li>${s}</li>`).join('')}</ol></div>`;
   rg.appendChild(d);
 });
 
