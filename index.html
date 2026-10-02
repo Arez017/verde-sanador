@@ -129,11 +129,51 @@ nav{
 .mal-detail-wrap.show{display:block}
 .mal-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:720px){.mal-detail-grid{grid-template-columns:1fr}}
-.planta-item{margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed rgba(82,183,136,.25)}
-.planta-item:last-child{border-bottom:none}
+.planta-item{
+  margin-bottom:14px;padding:14px 14px 14px 78px;border-bottom:none;
+  border-radius:14px;position:relative;overflow:hidden;
+  background:rgba(10,28,20,.55);
+  border:1px solid rgba(82,183,136,.18);
+  min-height:72px;
+}
+.planta-item:last-child{margin-bottom:0}
+.planta-item .planta-bg{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:.18;pointer-events:none;z-index:0;
+  filter:saturate(1.15) brightness(.85);
+}
+.planta-item .planta-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(6,22,16,.92) 0%,rgba(6,22,16,.55) 55%,rgba(6,22,16,.35) 100%);
+}
+.planta-item .planta-thumb{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  width:52px;height:52px;border-radius:50%;
+  background-size:cover;background-position:center;
+  border:2px solid rgba(168,230,207,.45);
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+  z-index:1;
+}
+.planta-item .planta-nombre,
+.planta-item .planta-desc{position:relative;z-index:1}
 .planta-nombre{font-weight:800;color:var(--lime);font-size:1.05rem}
-.planta-desc{font-size:.92rem;color:var(--muted);margin-top:4px}
-.receta-box{background:rgba(82,183,136,.08);border:1px solid rgba(82,183,136,.25);border-radius:12px;padding:16px;margin-top:8px}
+.planta-desc{font-size:.92rem;color:var(--muted);margin-top:4px;line-height:1.4}
+.receta-box{
+  background:rgba(82,183,136,.08);
+  border:1px solid rgba(82,183,136,.25);
+  border-radius:14px;padding:18px;margin-top:8px;
+  position:relative;overflow:hidden;
+}
+.receta-box .receta-bg{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:.14;pointer-events:none;z-index:0;
+  filter:saturate(1.1);
+}
+.receta-box .receta-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(8,24,18,.88),rgba(8,24,18,.75));
+}
+.receta-box > *{position:relative;z-index:1}
 .receta-box ol{padding-left:1.2rem;color:var(--muted);margin-top:8px}
 .receta-box li{margin-bottom:6px}
 
@@ -528,6 +568,23 @@ const PLANTAS = [
   {planta:'Cilantro',cientifico:'Coriandrum sativum',propiedad:'Aromática / Digestiva tradicional',desc:'Planta culinaria muy utilizada cuyas hojas y semillas también aparecen en preparaciones tradicionales relacionadas con la digestión.',contra:'Evitar si existe alergia conocida; los aceites esenciales concentrados no deben ingerirse sin orientación profesional.',img:'https://live.staticflickr.com/3599/3367757281_e985ec7d60_b.jpg',historia:'El cilantro tiene una historia culinaria milenaria y se extendió ampliamente por América. En los hogares se valora tanto por su uso alimentario como por sus preparaciones aromáticas tradicionales.',region:'Valles',emoji:'🌿'},
   {planta:'Chanca Piedra',cientifico:'Phyllanthus niruri',propiedad:'Tradicional digestiva / Uso popular',desc:'Planta conocida en la herbolaria popular por su uso tradicional en infusiones, especialmente en preparaciones relacionadas con el bienestar digestivo.',contra:'No sustituye tratamiento médico para cálculos o enfermedades renales. Evitar el uso prolongado sin orientación profesional.',img:'https://live.staticflickr.com/65535/48535533907_1c650a5e58_b.jpg',historia:'La chanca piedra es conocida en diferentes regiones tropicales y de los valles de Bolivia. Su nombre popular está relacionado con el uso tradicional que se le atribuye en la herbolaria.',region:'Yungas',emoji:'🪨'},
 ];
+
+
+/* Mapa nombre de planta -> imagen (para Malestares, sin alterar datos) */
+const PLANTA_IMG = {};
+PLANTAS.forEach(p=>{ if(p.planta && p.img) PLANTA_IMG[p.planta]=p.img; });
+/* Alias comunes por si el nombre en malestar difiere levemente */
+const PLANTA_IMG_ALIASES = {
+  'Diente de León':'Diente de León',
+  'Hierba Luisa':'Hierba Luisa',
+  'Wira Wira':'Wira Wira'
+};
+function getPlantaImg(nombre){
+  if(!nombre) return '';
+  if(PLANTA_IMG[nombre]) return PLANTA_IMG[nombre];
+  const key = Object.keys(PLANTA_IMG).find(k => k.toLowerCase() === nombre.toLowerCase());
+  return key ? PLANTA_IMG[key] : '';
+}
 
 const MALESTARES = [
   {
@@ -952,14 +1009,19 @@ function openMalestar(idx){
   const card=malGrid.querySelector(`[data-idx="${idx}"]`);
   if(card) card.classList.add('active');
   document.getElementById('detail-title').textContent=(m.icon||'🌿')+' '+m.nombre;
-  document.getElementById('detailPlantas').innerHTML=m.plantas.map(p=>
-    `<div class="planta-item"><div class="planta-nombre">${p.nombre}</div><div class="planta-desc">${p.desc}</div></div>`
-  ).join('');
+  document.getElementById('detailPlantas').innerHTML=m.plantas.map(p=>{
+    const img=getPlantaImg(p.nombre);
+    const bg=img?`<div class="planta-bg" style="background-image:url('${img}')"></div><div class="planta-thumb" style="background-image:url('${img}')"></div>`:'';
+    return `<div class="planta-item">${bg}<div class="planta-nombre">${p.nombre}</div><div class="planta-desc">${p.desc}</div></div>`;
+  }).join('');
   const r=m.receta||{};
+  const recetaBgImg = (m.plantas||[]).map(p=>getPlantaImg(p.nombre)).find(Boolean) || '';
+  const recetaBg = recetaBgImg ? `<div class="receta-bg" style="background-image:url('${recetaBgImg}')"></div>` : '';
   document.getElementById('detailProtocolo').innerHTML=`
     <p style="font-weight:700;color:var(--lime);font-size:1.05rem">${r.titulo||'Preparación'}</p>
     <p style="margin-top:8px;color:var(--muted)"><strong>Ingredientes:</strong> ${r.ingredientes||''}</p>
     <div class="receta-box">
+      ${recetaBg}
       <p style="font-weight:700;margin:0 0 6px">Pasos:</p>
       <ol>${(r.pasos||[]).map(p=>`<li>${p}</li>`).join('')}</ol>
     </div>
